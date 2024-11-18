@@ -2,32 +2,26 @@ name: Node.js CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   build:
+    name: "Build and Test"
     runs-on: ubuntu-latest
-
     permissions:
-      # Required to checkout the code
       contents: read
-      # Required to put a comment into the pull-request
       pull-requests: write
-
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
           cache: 'npm'
       - run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
+      - run: npm run build
+      - run: npm run test
       - name: Vitest Coverage Report
         uses: davelosert/vitest-coverage-report-action@v2.8.0
